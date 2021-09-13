@@ -1,13 +1,13 @@
-export class Block {
-    constructor(x, y, w, h, name, onclick = null) {
+class Block {
+    constructor(x, y, w, h, name, onclick) {
         this.name = name;
         this.xo = x;
         this.yo = y;
         this.wo = w;
         this.ho = h;
 
-        this.cx = 0;
-        this.cy = 0;
+        this.cx = x;
+        this.cy = y;
         this.cw = w;
         this.ch = h;
 
@@ -19,10 +19,10 @@ export class Block {
         const width = windowWidth;
         const height = windowHeight;
 
-        this.cx = this.xo * width;
-        this.cy = this.yo * height;
-        this.cw = this.wo * (canvas.width / 1920);
-        this.ch = this.ho * (canvas.height / 876);
+        this.cx = this.xo * (width / 1920);
+        this.cy = this.yo * (height / 876);
+        this.cw = this.wo * (width / 1920);
+        this.ch = this.ho * (height / 876);
     }
 
     clicked(x, y) {
@@ -36,11 +36,43 @@ export class Block {
         const cw = this.cw;
         const ch = this.ch;
 
-        const font_size = 25 * Math.min(canvas.width / 1920, canvas.height / 876);
+        const font_size = 25 * Math.min(windowWidth / 1920, windowHeight / 876);
 
+        fill(10);
         rect(cx, cy, cw, ch, 20);
         textSize(font_size);
+        textStyle('bold');
         textAlign(CENTER, CENTER);
+        fill(255);
         text(this.name, cx + cw / 2, cy + ch / 2);
+    }
+
+    singleClick() {
+
+    }
+
+    doubleClick() {
+
+    }
+}
+
+export class Sampler extends Block {
+    constructor (x, y, w, h) {
+        super(x, y, w, h, 'SAMPLER');
+    }
+}
+export class OneBitQuantizer extends Block {
+    constructor (x, y, w, h) {
+        super(x, y, w, h, '1-BIT\nQUANTIZER');
+    }
+}
+export class PredictionFilter extends Block {
+    constructor (x, y, w, h) {
+        super(x, y, w, h, 'PREDICTION\nFILTER');
+    }
+}
+export class Encoder extends Block {
+    constructor (x, y, w, h) {
+        super(x, y, w, h, 'ENCODER');
     }
 }

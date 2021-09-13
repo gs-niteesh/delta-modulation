@@ -28,6 +28,7 @@ export class Line {
         line(x1, y1, x2, y2);
         const arrow_length = 10 * Math.min(canvas.width / 1920, canvas.height / 876);
 
+        strokeWeight(2);
         if (arrow_head == 0) {
             line(x2, y2, x2 - arrow_length, y2 + arrow_length);
             line(x2, y2, x2 - arrow_length, y2 - arrow_length);
@@ -45,6 +46,8 @@ export class Line {
         if (this.text) {
             textSize(18 * Math.min(canvas.width / 1920, canvas.height / 876));
             textAlign(CENTER, BOTTOM);
+            textStyle('normal');
+            fill(10);
             text(this.text, x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2 - 5);
         }
     }

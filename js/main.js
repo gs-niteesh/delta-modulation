@@ -1,4 +1,4 @@
-import { Block } from './Block.js';
+import { Sampler, OneBitQuantizer, PredictionFilter, Encoder } from './Block.js';
 import { Adder } from './Adder.js';
 import { Line } from './Line.js';
 
@@ -14,10 +14,10 @@ function windowResized() {
 export function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    myblocks.set('sampler', new Block(0.20, 0.1, 200, 100, 'SAMPLER'));
-    myblocks.set('quantizer', new Block(0.45, 0.1, 220, 100, '1-BIT\nQUANTIZER'));
-    myblocks.set('prediction filter', new Block(0.45, 0.4, 220, 100, 'PREDICTION\nFILTER'));
-    myblocks.set('encoder', new Block(0.70, 0.1, 220, 100, 'ENCODER'));
+    myblocks.set('sampler', new Sampler(384, 87.6, 200, 100));
+    myblocks.set('quantizer', new OneBitQuantizer(864, 87.6, 220, 100));
+    myblocks.set('prediction filter', new PredictionFilter(864, 350.4, 220, 100));
+    myblocks.set('encoder', new Encoder(1344, 87.6, 220, 100));
 
     /* FIXME: Find a new way to make the elements responsive to resize */
     myblocks.set('adder1', new Adder(15, (val) => {
