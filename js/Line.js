@@ -44,7 +44,7 @@ export class Line {
         }
 
         if (this.text) {
-            textSize(18 * Math.min(canvas.width / 1920, canvas.height / 876));
+            textSize(10 * Math.min(canvas.width / 1920, canvas.height / 876));
             textAlign(CENTER, BOTTOM);
             textStyle('normal');
             fill(10);
