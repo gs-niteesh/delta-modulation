@@ -1,4 +1,4 @@
-import { Sampler, OneBitQuantizer, PredictionFilter, Encoder } from './Block.js';
+import { SineGenerator, Sampler, OneBitQuantizer, PredictionFilter, Encoder } from './Block.js';
 import { Adder } from './Adder.js';
 import { Line } from './Line.js';
 
@@ -14,10 +14,11 @@ function windowResized() {
 export function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    myblocks.set('sampler', new Sampler(384, 87.6, 200, 100));
-    myblocks.set('quantizer', new OneBitQuantizer(864, 87.6, 220, 100));
-    myblocks.set('prediction filter', new PredictionFilter(864, 350.4, 220, 100));
-    myblocks.set('encoder', new Encoder(1344, 87.6, 220, 100));
+    myblocks.set('generator', new SineGenerator(160, 87.6, 200, 100));
+    myblocks.set('sampler', new Sampler(480, 87.6, 200, 100));
+    myblocks.set('quantizer', new OneBitQuantizer(970, 87.6, 220, 100));
+    myblocks.set('prediction filter', new PredictionFilter(970, 350.4, 220, 100));
+    myblocks.set('encoder', new Encoder(1460, 87.6, 220, 100));
 
     /* FIXME: Find a new way to make the elements responsive to resize */
     myblocks.set('adder1', new Adder(15, (val) => {
@@ -34,6 +35,16 @@ export function setup() {
         val.cx = quantizer.cx + 0.75 * (encoder.cx - quantizer.cx);
         val.cy = quantizer.cy + 0.7 * (filter.cy - quantizer.cy);
     }));
+
+    myblocks.set('line0', new Line((val) => {
+        const generator = myblocks.get('generator');
+        const sampler = myblocks.get('sampler');
+
+        val.x1 = generator.cx + generator.cw;
+        val.y1 = generator.cy + generator.ch / 2;
+        val.x2 = sampler.cx;
+        val.y2 = sampler.cy + sampler.ch / 2;
+    }, 0, 'x(t)'));
 
     myblocks.set('line1', new Line((val) => {
         const sampler = myblocks.get('sampler');
@@ -130,10 +141,39 @@ export function setup() {
     }, 0));
 }
 
+// Get DOM Elements
+const modal = document.getElementById('my-modal');
+const modalBtn = document.querySelector('#modal-btn');
+const closeBtn = document.querySelector('.close');
+
+// Events
+// modalBtn.addEventListener('click', openModal);
+// closeBtn.addEventListener('click', closeModal);
+// window.addEventListener('click', outsideClick);
+
+// Open
+function openModal() {
+  modal.style.display = 'block';
+}
+
+// Close
+function closeModal() {
+  modal.style.display = 'none';
+}
+
+// Close If Outside Click
+function outsideClick(e) {
+    console.log(e);
+  if (e.target == modal) {
+    modal.style.display = 'none';
+  }
+}
+
+
 export function draw() {
     clear();
 
-    myblocks.forEach((val) => {
+    myblocks.forEach((val, key) => {
         val.draw();
     });
 }
@@ -141,7 +181,18 @@ export function draw() {
 function doubleClicked() {
 }
 
-function mousePressed() {
+function mousePressed(e) {
+    let clicked = false;
+    console.log(e);
+    console.log(e.target);
+    myblocks.forEach((val) => {
+        if (val.clicked(mouseX, mouseY)) {
+            clicked = true;
+            // modal.style.display = 'block';
+        }
+    });
+    // if (!clicked)
+    //     modal.style.display = 'none';
 }
 
 window.setup = setup;

@@ -26,7 +26,7 @@ export class Line {
         const arrow_head = this.arrow_head;
 
         line(x1, y1, x2, y2);
-        const arrow_length = 10 * Math.min(canvas.width / 1920, canvas.height / 876);
+        const arrow_length = 10 * Math.min(canvas.width / 1920, canvas.height / 1080);
 
         strokeWeight(2);
         if (arrow_head == 0) {
@@ -44,7 +44,7 @@ export class Line {
         }
 
         if (this.text) {
-            textSize(18 * Math.min(canvas.width / 1920, canvas.height / 876));
+            textSize(18 * Math.min(canvas.width / 1920, canvas.height / 1080));
             textAlign(CENTER, BOTTOM);
             textStyle('normal');
             fill(10);

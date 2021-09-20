@@ -7,7 +7,7 @@ export class Adder {
 
         this.update_pos = () => {
             update_pos_cb(this);
-            this.cr = this.ro * Math.min(windowWidth / 1920, windowHeight / 876);
+            this.cr = this.ro * Math.min(windowWidth / 1920, windowHeight / 1080);
         }
 
         this.update_pos();
