@@ -1,4 +1,5 @@
-import { SineGenerator, Sampler, OneBitQuantizer, PredictionFilter, Encoder } from './Block.js';
+import { SineGenerator, Sampler, OneBitQuantizer, PredictionFilter } from './Block.js'
+import { Encoder, Decoder, LowPassFilter } from './Block.js';
 import { Adder } from './Adder.js';
 import { Line } from './Line.js';
 
@@ -11,9 +12,7 @@ function windowResized() {
     });
 }
 
-export function setup() {
-    createCanvas(windowWidth, windowHeight);
-
+function setup_modulation() {
     myblocks.set('generator', new SineGenerator(160, 87.6, 200, 100));
     myblocks.set('sampler', new Sampler(480, 87.6, 200, 100));
     myblocks.set('quantizer', new OneBitQuantizer(970, 87.6, 220, 100));
@@ -53,7 +52,7 @@ export function setup() {
 
         val.x1 = sampler.cx + sampler.cw;
         val.y1 = sampler.cy + sampler.ch / 2;
-        val.x2 = adder.cx - adder.cr ;
+        val.x2 = adder.cx - adder.cr;
         val.y2 = quantizer.cy + quantizer.ch / 2;
     }, 0, 'x(nTs)'));
 
@@ -62,7 +61,7 @@ export function setup() {
         const quantizer = myblocks.get('quantizer');
         const adder = myblocks.get('adder1');
 
-        val.x1 = adder.cx + adder.cr ;
+        val.x1 = adder.cx + adder.cr;
         val.y1 = sampler.cy + sampler.ch / 2;
         val.x2 = quantizer.cx;
         val.y2 = quantizer.cy + quantizer.ch / 2;
@@ -74,9 +73,9 @@ export function setup() {
         const filter = myblocks.get('prediction filter');
 
         val.x1 = sampler.cx + 0.65 * (quantizer.cx - sampler.cx);
-        val.y1 =  filter.cy + filter.ch / 2;
+        val.y1 = filter.cy + filter.ch / 2;
         val.x2 = val.x1;
-        val.y2 =  quantizer.cy + quantizer.ch / 2 + myblocks.get('adder1').cr;
+        val.y2 = quantizer.cy + quantizer.ch / 2 + myblocks.get('adder1').cr;
     }, 90));
 
     myblocks.set('line4', new Line((val) => {
@@ -141,34 +140,61 @@ export function setup() {
     }, 0));
 }
 
+function setup_demodulation() {
+    myblocks.set('decoder', new Decoder(450, 287.6, 200, 100));
+    myblocks.set('predictionfilter', new PredictionFilter(850, 287.6, 200, 100));
+    myblocks.set('lowpassfilter', new LowPassFilter(1250, 287.6, 200, 100));
+
+    myblocks.set('line1', new Line((val) => {
+        const decoder = myblocks.get('decoder');
+        val.x1 = decoder.cx * 0.6;
+        val.y1 = decoder.cy + (decoder.ch / 2);
+        val.x2 = decoder.cx;
+        val.y2 = decoder.cy + (decoder.ch / 2);
+    }, 0, 'Encoder Output'));
+
+    myblocks.set('line2', new Line((val) => {
+        const decoder = myblocks.get('decoder');
+        const filter = myblocks.get('predictionfilter');
+        val.x1 = decoder.cx + (filter.cx - decoder.cx) * 0.5;
+        val.y1 = decoder.cy + (decoder.ch / 2);
+        val.x2 = filter.cx;
+        val.y2 = decoder.cy + (decoder.ch / 2);
+        console.log(val);
+    }, 0, 'Decoded Signal'));
+
+    myblocks.set('line3', new Line((val) => {
+        const filter = myblocks.get('predictionfilter');
+        const lpf = myblocks.get('lowpassfilter');
+        val.x1 = filter.cx + (lpf.cx - filter.cx) * 0.5;
+        val.y1 = filter.cy + (filter.ch / 2);
+        val.x2 = lpf.cx;
+        val.y2 = filter.cy + (filter.ch / 2);
+        console.log(val);
+    }, 0, 'Predicted Signal'));
+
+    myblocks.set('line4', new Line((val) => {
+        const lpf = myblocks.get('lowpassfilter');
+        val.x1 = lpf.cx + lpf.cw;
+        val.y1 = lpf.cy + (lpf.ch / 2);
+        val.x2 = windowWidth * 0.9;
+        val.y2 = val.y1;
+        console.log(val);
+    }, 0, 'Reconstructed Message Signal'));
+}
+
+
 // Get DOM Elements
 const modal = document.getElementById('my-modal');
-const modalBtn = document.querySelector('#modal-btn');
 const closeBtn = document.querySelector('.close');
 
+let currentModal = null;
+
 // Events
-// modalBtn.addEventListener('click', openModal);
-// closeBtn.addEventListener('click', closeModal);
-// window.addEventListener('click', outsideClick);
-
-// Open
-function openModal() {
-  modal.style.display = 'block';
-}
-
-// Close
-function closeModal() {
-  modal.style.display = 'none';
-}
-
-// Close If Outside Click
-function outsideClick(e) {
-    console.log(e);
-  if (e.target == modal) {
+closeBtn.addEventListener('onclick', () => {
+    console.log('close modal');
     modal.style.display = 'none';
-  }
-}
-
+});
 
 export function draw() {
     clear();
@@ -178,25 +204,57 @@ export function draw() {
     });
 }
 
-function doubleClicked() {
+function singleClicked(event) {
+    console.log(mouseX, mouseY);
 }
+
+function doubleClicked() {
+    console.log('double');
+    if (currentModal) {
+        currentModal.style.display = 'none';
+        currentModal = null;
+    }
+}
+
+let numClicks = 0;
+let singleClickTimer;
+const handleClick = (event) => {
+    console.log(event);
+    numClicks++;
+    if (numClicks === 1) {
+        singleClickTimer = setTimeout(() => {
+            numClicks = 0;
+            singleClicked();
+        }, 250);
+    } else if (numClicks === 2) {
+        clearTimeout(singleClickTimer);
+        numClicks = 0;
+        doubleClicked();
+    }
+};
+
 
 function mousePressed(e) {
     let clicked = false;
-    console.log(e);
-    console.log(e.target);
     myblocks.forEach((val) => {
         if (val.clicked(mouseX, mouseY)) {
             clicked = true;
-            // modal.style.display = 'block';
+            modal.style.display = 'block';
+            currentModal = modal;
         }
     });
-    // if (!clicked)
-    //     modal.style.display = 'none';
+}
+
+export function setup() {
+    createCanvas(windowWidth, windowHeight);
+
+    setup_demodulation();
 }
 
 window.setup = setup;
 window.draw = draw;
-window.mousePressed = mousePressed;
-window.doubleClicked = doubleClicked;
 window.windowResized = windowResized;
+window.onclick = singleClicked;
+window.ondblclick = doubleClicked;
+
+// document.addEventListener("click", handleClick);

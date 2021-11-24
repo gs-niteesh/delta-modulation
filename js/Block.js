@@ -117,24 +117,33 @@ export class Sampler extends Block {
         modal.appendChild(this.sampling_slider);
     }
 }
+
 export class OneBitQuantizer extends Block {
     constructor (x, y, w, h) {
         super(x, y, w, h, '1-BIT\nQUANTIZER');
     }
-
-    clicked(x, y) { return false; }
 }
+
+export class LowPassFilter extends Block {
+    constructor (x, y, w, h) {
+        super(x, y, w, h, 'LOW PASS\nFILTER');
+    }
+}
+
 export class PredictionFilter extends Block {
     constructor (x, y, w, h) {
         super(x, y, w, h, 'PREDICTION\nFILTER');
     }
-
-    clicked(x, y) { return false; }
 }
+
 export class Encoder extends Block {
     constructor (x, y, w, h) {
         super(x, y, w, h, 'ENCODER');
     }
+}
 
-    clicked(x, y) { return false; }
+export class Decoder extends Block {
+    constructor (x, y, w, h) {
+        super(x, y, w, h, 'DECODER');
+    }
 }
