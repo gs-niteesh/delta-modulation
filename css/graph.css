@@ -8,15 +8,6 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-.title {
-    padding: 0.7rem 7rem;
-    margin:0;
-    color: black;
-    font-family: 'Urbanist', sans-serif;
-    position: relative;
-    top:2rem;
-}
-
 .container {
     margin: 0;
     padding: 0;
@@ -33,9 +24,10 @@ body {
 }
 
 .container-variables {
-    /**/border-left: 2px solid black;
+    border-left: 2px solid black;
     width: 80%;
-    padding:1.5rem 3rem;
+    line-height: 0.7;
+    padding:1.5rem 0 1.5rem;
 }
 
 .container-result {
@@ -48,12 +40,17 @@ body {
 #container-checkbox{
     width: max-content;
     max-width: 80%;
-    padding:1.5rem 3rem;
+    padding:1.5rem 0rem 3rem;
+}
+
+.modal-body {
+    padding: 0.5rem !important;
 }
 
 #container-split{
     display: grid;
-    grid-template-columns: 25% 40% 35%;
+    grid-template-columns: 33% 33% 33%;
+    height: 30% !important;
 }
 
 #canvas {
@@ -68,5 +65,5 @@ body {
 }
 
 .varname{
-    font-weight: 900;
+    font-weight: 500;
 }

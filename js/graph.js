@@ -25,14 +25,11 @@ let unsampled_wave_checkbox = document.getElementById("unsampled_wave");
 let sampled_points_checkbox = document.getElementById("sampled_points");
 let staircase_wave_checkbox = document.getElementById("staircase_wave");
 
-let canvas_width = window.screen.width-50;
-let canvas_height = 600;
-let orgx = 200;
-let orgy = 315;
+let canvas_width = canvas.parentElement.clientWidth;
+let canvas_height = canvas.parentElement.clientHeight;
 
-// Set resolution for canvas
-canvas.width = canvas_width;
-canvas.height = canvas_height;
+let orgx = 15;
+let orgy = 185;
 
 let wave_amplitude_slider = document.getElementById("amplitude");
 let wave_frequency_slider = document.getElementById("frequency");
@@ -55,35 +52,37 @@ function drawPoint(x, y) {
     ctx.lineWidth = 1;
     ctx.arc(x, y, radius*1.3, 0, 2 * Math.PI, false);
     ctx.fill();
-
     ctx.closePath();
 }
 
 // Draws the axes for the graph
 function drawAxes() {
+    const line_start = 20;
+    const line_end = 330;
+
     ctx.beginPath();
     // Vertical line
-    ctx.moveTo(orgx, 100);
-    ctx.lineTo(orgx, 530);
+    ctx.moveTo(orgx, line_start);
+    ctx.lineTo(orgx, line_end);
     ctx.strokeStyle = "black";
     ctx.stroke();
 
     // Horizontal line
-    ctx.moveTo(100, 510);
-    ctx.lineTo(window.screen.width-100, 510);
+    ctx.moveTo(orgx, line_end);
+    ctx.lineTo(canvas_width - 50, line_end);
     ctx.strokeStyle = "black";
     ctx.stroke();
 
     // Base line
-    ctx.moveTo(orgx, orgy);
-    ctx.lineTo(window.screen.width-100, orgy);
+    ctx.moveTo(orgx, (line_start + line_end) / 2);
+    ctx.lineTo(canvas_width - 50, (line_start + line_end) / 2);
     ctx.strokeStyle = "black";
     ctx.stroke();
 
     ctx.font = "20px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText("Amplitude", 100, 120, 90);
-    ctx.fillText("Time", window.screen.width-200, 530, 70);
+    ctx.fillText("Amplitude", orgx + 10, line_start + 10, 90);
+    ctx.fillText("Time", canvas_width - 100, line_end + 20, 70);
     ctx.closePath();
 
 }
@@ -220,7 +219,22 @@ function drawGraph() {
     plotSine(orgx, orgy);
 }
 
+let size_set = false;
+
 function draw() {
+    requestAnimationFrame(draw);
+
+    canvas_height = canvas.parentElement.clientHeight;
+    canvas_width = canvas.parentElement.clientWidth;
+    if (canvas_height > 100 && !size_set) {
+        canvas_height = canvas.parentElement.clientHeight + 200;
+        canvas_width = canvas.parentElement.clientWidth;
+        ctx.canvas.width = canvas_width;
+        ctx.canvas.height = canvas_height;
+        console.log(canvas_height);
+        console.log(canvas_width);
+        size_set = true;
+    }
     // Clear the screen
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas_width, canvas_height);
@@ -234,8 +248,12 @@ function draw() {
     horizontal_scaling_factor = horizontal_scale_slider.value;
 
     drawGraph();
+}
+
+function setupModal(event) {
+    $('#exampleModal').modal('show');
 
     requestAnimationFrame(draw);
 }
 
-requestAnimationFrame(draw);
+document.getElementById("button1").onclick = setupModal;

@@ -10,7 +10,8 @@
     padding-left: 50px;
     margin-bottom: 22px;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 18px;
+    padding-top: 5px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

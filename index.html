@@ -19,141 +19,93 @@
 </head>
 
 <body>
-  <h1 class="title main-title" style = "text-align:center">Binary Phase Shift Keying</h1>
+  <h1 class="title main-title" style="text-align:center">Delta Modulation</h1>
 
-  <br>
-  <button id="button1" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  <button id="button1" type="button" class="btn btn-primary">
     Set Input
   </button>
 
   <button id="button2" type="button" class="btn btn-primary" data-toggle="modal" data-target="#deModal">
     Modulated
   </button>
+
   <!-- Modal -->
-  <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="width:150%">
-
-        <!-- Modal Header -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">DM Graph</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title" id="exampleModalLabel">DM Graph</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-
-        <!-- Modal body -->
         <div class="modal-body">
-          <div class="container">
-            <div class="container-canvas">
+          <div style="display: block">
+            <div class="canvas-shower" id="canvas-container">
               <canvas id="canvas"></canvas>
             </div>
-
-            <br><br><br>
-
-
             <div id="container-split">
               <div id="container-checkbox">
-                <h1 class="subtitle">Display</h1><br>
-                <label class="checkbox-container"><span class="subspan">Show Unsampled wave</span>
-                  <input type="checkbox" name="usw" id="unsampled_wave" checked>
-                  <span class="checkmark"></span>
-                </label><br>
-                <label class="checkbox-container"><span class="subspan">Show Sampled points</span>
-                  <input type="checkbox" name="sp" id="sampled_points" checked>
-                  <span class="checkmark"></span>
-                </label><br>
-                <label class="checkbox-container"><span class="subspan">Show Staircase wave</span>
-                  <input type="checkbox" name="scw" id="staircase_wave" checked>
-                  <span class="checkmark"></span>
-                </label><br>
+                <h2 class="subtitle"><u><b>Display</b></u></h1><br>
+                  <label class="checkbox-container"><span class="subspan">Show Unsampled wave</span>
+                    <input type="checkbox" name="usw" id="unsampled_wave" checked>
+                    <span class="checkmark"></span>
+                  </label><br>
+                  <label class="checkbox-container"><span class="subspan">Show Sampled points</span>
+                    <input type="checkbox" name="sp" id="sampled_points" checked>
+                    <span class="checkmark"></span>
+                  </label><br>
+                  <label class="checkbox-container"><span class="subspan">Show Staircase wave</span>
+                    <input type="checkbox" name="scw" id="staircase_wave" checked>
+                    <span class="checkmark"></span>
+                  </label><br>
 
               </div>
               <div class="container-variables">
                 <div class="variables">
-                  <h1 class="subtitle">Variables</h1>
-                  <label for="fname" class="varname">Amplitude(V):</label><br>
-                  <div class="slidecontainer">
-                    <input type="range" min="2" max="20" step="1" value="2" class="slider" id="amplitude">
-                  </div>
-                  <label for="fname" class="varname">Frequency(hz):</label><br>
-                  <div class="slidecontainer">
-                    <input type="range" min="1" max="20" step="1" value="1" class="slider" id="frequency">
-                  </div>
-                  <label for="fname" class="varname">Sampling Frequency(hz):</label><br>
-                  <div class="slidecontainer">
-                    <input type="range" min="20" max="200" step="2" value="20" class="slider" id="sampling_frequency">
-                  </div>
-                  <label for="fname" class="varname">Vertical Scale:</label><br>
-                  <div class="slidecontainer">
-                    <input type="range" min="20" max="200" step="10" value="50" class="slider"
-                      id="vertical_scale_factor">
-                  </div>
-                  <label for="fname" class="varname">Horizontal Scale:</label><br>
-                  <div class="slidecontainer">
-                    <input type="range" min="2" max="200" step="10" value="50" class="slider"
-                      id="horizontal_scale_factor">
-                  </div>
-                  <div class="container">
-                    <h4>Binary Sequence Bits</h4>
-                    <select id="bit1" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit2" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit3" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit4" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit5" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit6" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit7" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                    <select id="bit8" onchange="binSeq()">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                    </select>
-                  </div>
+                  <h2 class="subtitle"><u><b>Variables</b></u></h1>
+                    <label for="fname" class="varname">Amplitude(V):</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="2" max="20" step="1" value="2" class="slider" id="amplitude">
+                    </div>
+                    <label for="fname" class="varname">Frequency(hz):</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="1" max="20" step="1" value="1" class="slider" id="frequency">
+                    </div>
+                    <label for="fname" class="varname">Sampling Frequency(hz):</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="20" max="2000" step="2" value="20" class="slider" id="sampling_frequency">
+                    </div>
+                    <label for="fname" class="varname">Vertical Scale:</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="20" max="200" step="10" value="50" class="slider"
+                        id="vertical_scale_factor">
+                    </div>
+                    <label for="fname" class="varname">Horizontal Scale:</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="2" max="200" step="10" value="50" class="slider"
+                        id="horizontal_scale_factor">
+                    </div>
                 </div>
               </div>
-
               <div class="container-result">
-                <h1 class="subtitle">Result</h1>
-                <h3 class="subtitle">Wave Amplitude(V): <span id="Am"></span></h3>
-                <h3 class="subtitle">Wave Frequency(hz): <span id="Fm"></span></h3>
-                <h3 class="subtitle">Sampling Frequency(hz): <span id="Fs"></span> </h3>
-                <h3 class="subtitle">Delta: <span id="Delta"></span> </h3>
+                <h2 class="subtitle"><u><b>Result</b></u></h3>
+                  <h5 class="subtitle"><b>Wave Amplitude(V): </b><span id="Am"></span></h5>
+                  <h5 class="subtitle">Wave Frequency(hz): <span id="Fm"></span></h5>
+                  <h5 class="subtitle">Sampling Frequency(hz): <span id="Fs"></span> </h5>
+                  <h5 class="subtitle">Delta: <span id="Delta"></span> </h5>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-
       </div>
     </div>
   </div>
 
-
   <div class="modal fade" id="deModal">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style = "width:150%">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
         <!-- Modal Header -->
         <div class="modal-header">
@@ -184,12 +136,9 @@
   <script type="module" src="js/dmGraph.js"></script>
 
 
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
 </body>
 
 </html>
