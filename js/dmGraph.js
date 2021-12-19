@@ -21,9 +21,9 @@ let wave_amplitude_span = document.getElementById("Am");
 let delta_span = document.getElementById("Delta");
 let vertical_scale_slider = document.getElementById("vertical_scale_factor");
 let horizontal_scale_slider = document.getElementById("horizontal_scale_factor");
-let unsampled_wave_checkbox = document.getElementById("unsampled_wave");
-let sampled_points_checkbox = document.getElementById("sampled_points");
-let staircase_wave_checkbox = document.getElementById("staircase_wave");
+// let unsampled_wave_checkbox = document.getElementById("unsampled_wave");
+// let sampled_points_checkbox = document.getElementById("sampled_points");
+// let staircase_wave_checkbox = document.getElementById("staircase_wave");
 
 let canvas_width = window.screen.width-50;
 let canvas_height = 600;
@@ -179,7 +179,7 @@ function plotSine(xOffset, yOffset) {
 
     // Draw the sampled wave (If you dnt understand what I mean by sampled wave just check the sampled wave option from the check box).
     delta = ((2 * Math.PI * amplitude * frequency) / Fs).toFixed(4);
-    if (sampled_points_checkbox.checked) {
+    // if (sampled_points_checkbox.checked) {
         var idx = 0;
         while (idx < width) {
             drawPoint(xOffset + idx * horizontal_scaling_factor, yOffset - vertical_scaling_factor * x[idx]);
@@ -189,7 +189,7 @@ function plotSine(xOffset, yOffset) {
             ctx.stroke();
             idx++;
         }
-    }
+    // }
 
     // Don't worry about this calculation. This is basically DM calculation if u don't understand
     // this no issues, even I don't. Just converted mathematical equations to code.
@@ -211,7 +211,7 @@ function plotSine(xOffset, yOffset) {
     }
 
     // Draw the stair case wave
-    if (staircase_wave_checkbox.checked)
+    // if (staircase_wave_checkbox.checked)
         plotStairCase(xq);
 }
 
