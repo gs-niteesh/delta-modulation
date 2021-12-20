@@ -144,6 +144,7 @@ function setup_modulation() {
 const modal = document.getElementById('my-modal');
 const modalBtn = document.querySelector('#modal_btn');
 // const closeBtn = document.querySelector('.close');
+const closeBtn = document.querySelector('.close');
 
 // Events
 // modalBtn.onclick
@@ -151,11 +152,11 @@ const modalBtn = document.querySelector('#modal_btn');
 // window.addEventListener(onclick, outsideClick);
 
 function setup_demodulation() {
-    myblocks.set('decoder', new Decoder(450, 287.6, 200, 100));
-    myblocks.set('predictionfilter', new PredictionFilter(850, 287.6, 200, 100));
-    myblocks.set('lowpassfilter', new LowPassFilter(1250, 287.6, 200, 100));
+    myblocks.set('decoder', new Decoder(450, 587.6, 200, 100));
+    myblocks.set('predictionfilter', new PredictionFilter(850, 587.6, 200, 100));
+    myblocks.set('lowpassfilter', new LowPassFilter(1250, 587.6, 200, 100));
 
-    myblocks.set('line1', new Line((val) => {
+    myblocks.set('line1dm', new Line((val) => {
         const decoder = myblocks.get('decoder');
         val.x1 = decoder.cx * 0.6;
         val.y1 = decoder.cy + (decoder.ch / 2);
@@ -164,7 +165,7 @@ function setup_demodulation() {
     }, 0, 'Encoder Output'));
 
 
-    myblocks.set('line2', new Line((val) => {
+    myblocks.set('line2dm', new Line((val) => {
         const decoder = myblocks.get('decoder');
         const filter = myblocks.get('predictionfilter');
         val.x1 = decoder.cx + (filter.cx - decoder.cx) * 0.5;
@@ -174,7 +175,7 @@ function setup_demodulation() {
         console.log(val);
     }, 0, 'Decoded Signal'));
 
-    myblocks.set('line3', new Line((val) => {
+    myblocks.set('line3dm', new Line((val) => {
         const filter = myblocks.get('predictionfilter');
         const lpf = myblocks.get('lowpassfilter');
         val.x1 = filter.cx + (lpf.cx - filter.cx) * 0.5;
@@ -184,7 +185,7 @@ function setup_demodulation() {
         console.log(val);
     }, 0, 'Predicted Signal'));
 
-    myblocks.set('line4', new Line((val) => {
+    myblocks.set('line4dm', new Line((val) => {
         const lpf = myblocks.get('lowpassfilter');
         val.x1 = lpf.cx + lpf.cw;
         val.y1 = lpf.cy + (lpf.ch / 2);
@@ -194,10 +195,6 @@ function setup_demodulation() {
     }, 0, 'Reconstructed Message Signal'));
 }
 
-
-// Get DOM Elements
-const modal = document.getElementById('my-modal');
-const closeBtn = document.querySelector('.close');
 
 let currentModal = null;
 
@@ -259,6 +256,7 @@ function mousePressed(e) {
 export function setup() {
     createCanvas(windowWidth, windowHeight);
 
+    setup_modulation();
     setup_demodulation();
 }
 
