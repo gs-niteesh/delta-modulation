@@ -70,11 +70,11 @@
                     </div>
                     <label for="fname" class="varname">Frequency(hz):</label><br>
                     <div class="slidecontainer">
-                      <input type="range" min="1" max="20" step="1" value="1" class="slider" id="frequency">
+                      <input type="range" min="100" max="2000" step="2" value="100" class="slider" id="frequency">
                     </div>
                     <label for="fname" class="varname">Sampling Frequency(hz):</label><br>
                     <div class="slidecontainer">
-                      <input type="range" min="20" max="2000" step="2" value="20" class="slider"
+                      <input type="range" min="500" max="20000" step="2" value="500" class="slider"
                         id="sampling_frequency">
                     </div>
                     <label for="fname" class="varname">Vertical Scale:</label><br>
@@ -110,9 +110,46 @@
           <h4 class="modal-title">DM Graph - Modulated Graph</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <div class="modal-body">
-          <div class="canvas-shower" id="canvas-container" style="padding-bottom: 20vh;">
+        <div class="modal-body" style="display: block">
+          <div class="canvas-shower" id="canvas-container" style="padding-bottom: 10vh;">
             <canvas id="canvas2"></canvas>
+          </div>
+          <div id="container-split">
+            <div class="container-variables">
+              <div class="variables">
+                <h2 class="subtitle"><u><b>Variables</b></u></h1>
+                  <label for="fname" class="varname">Amplitude(V):</label><br>
+                  <div class="slidecontainer">
+                    <input type="range" min="2" max="20" step="1" value="2" class="slider" id="amplitude">
+                  </div>
+                  <label for="fname" class="varname">Frequency(hz):</label><br>
+                  <div class="slidecontainer">
+                    <input type="range" min="100" max="2000" step="2" value="100" class="slider" id="frequency">
+                  </div>
+                  <label for="fname" class="varname">Sampling Frequency(hz):</label><br>
+                  <div class="slidecontainer">
+                    <input type="range" min="500" max="20000" step="2" value="500" class="slider"
+                      id="sampling_frequency">
+                  </div>
+                  <label for="fname" class="varname">Vertical Scale:</label><br>
+                  <div class="slidecontainer">
+                    <input type="range" min="20" max="200" step="10" value="50" class="slider"
+                      id="vertical_scale_factor">
+                  </div>
+                  <label for="fname" class="varname">Horizontal Scale:</label><br>
+                  <div class="slidecontainer">
+                    <input type="range" min="2" max="200" step="10" value="50" class="slider"
+                      id="horizontal_scale_factor">
+                  </div>
+              </div>
+            </div>
+            <div class="container-result">
+              <h2 class="subtitle"><u><b>Result</b></u></h3>
+                <h5 class="subtitle"><b>Wave Amplitude(V): </b><span id="Am"></span></h5>
+                <h5 class="subtitle">Wave Frequency(hz): <span id="Fm"></span></h5>
+                <h5 class="subtitle">Sampling Frequency(hz): <span id="Fs"></span> </h5>
+                <h5 class="subtitle">Delta: <span id="Delta"></span> </h5>
+            </div>
           </div>
         </div>
 
