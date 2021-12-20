@@ -140,6 +140,16 @@ function setup_modulation() {
     }, 0));
 }
 
+// Get DOM Elements
+const modal = document.getElementById('my-modal');
+const modalBtn = document.querySelector('#modal_btn');
+// const closeBtn = document.querySelector('.close');
+
+// Events
+// modalBtn.onclick
+// closeBtn.addEventListener(onclick, closeModal);
+// window.addEventListener(onclick, outsideClick);
+
 function setup_demodulation() {
     myblocks.set('decoder', new Decoder(450, 287.6, 200, 100));
     myblocks.set('predictionfilter', new PredictionFilter(850, 287.6, 200, 100));
@@ -152,6 +162,7 @@ function setup_demodulation() {
         val.x2 = decoder.cx;
         val.y2 = decoder.cy + (decoder.ch / 2);
     }, 0, 'Encoder Output'));
+
 
     myblocks.set('line2', new Line((val) => {
         const decoder = myblocks.get('decoder');

@@ -2,38 +2,142 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
-    <title>Delta Modulation</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/main.css">
+  <title>Delta Modulation</title>
 
-    <!-- p5 stuff -->
-    <script src="js/p5.js"></script>
+  <!-- p5 stuff -->
+  <script src="js/p5.js"></script>
 
-    <!-- Simulator stuff -->
-    <script type="module" src="js/main.js"></script>
+  <!-- Simulator stuff -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/graph.css">
+  <link rel="stylesheet" href="./css/scrollbars.css">
+  <link rel="stylesheet" href="./css/checkmark.css">
+  <link rel="stylesheet" href="./css/customslider.css">
 </head>
 
 <body>
-  <h1 class="title main-title">Delta Modulation</h1>
+  <h1 class="title main-title" style="text-align:center">Delta Modulation</h1>
+
+  <button id="button1" type="button" class="btn btn-primary">
+    Set Input
+  </button>
+
+  <button id="button2" type="button" class="btn btn-primary" data-toggle="modal" data-target="#deModal">
+    Modulated
+  </button>
+
   <!-- Modal -->
-  <div id="my-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="close">&times;</span>
-        <h2>Modal Header</h2>
-      </div>
-      <div class="modal-body">
-        <p>This is my modal</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla repellendus nisi, sunt consectetur ipsa velit
-          repudiandae aperiam modi quisquam nihil nam asperiores doloremque mollitia dolor deleniti quibusdam nemo
-          commodi ab.</p>
-      </div>
-      <div class="modal-footer">
-        <h3>Modal Footer</h3>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">DM Graph</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div style="display: block">
+            <div class="canvas-shower" id="canvas-container">
+              <canvas id="canvas"></canvas>
+            </div>
+            <div id="container-split">
+              <!-- <div id="container-checkbox">
+                <h2 class="subtitle"><u><b>Display</b></u></h1><br>
+                  <label class="checkbox-container"><span class="subspan">Show Unsampled wave</span>
+                    <input type="checkbox" name="usw" id="unsampled_wave" checked>
+                    <span class="checkmark"></span>
+                  </label><br>
+                  <label class="checkbox-container"><span class="subspan">Show Sampled points</span>
+                    <input type="checkbox" name="sp" id="sampled_points" checked>
+                    <span class="checkmark"></span>
+                  </label><br>
+                  <label class="checkbox-container"><span class="subspan">Show Staircase wave</span>
+                    <input type="checkbox" name="scw" id="staircase_wave" checked>
+                    <span class="checkmark"></span>
+                  </label><br>
+              </div> -->
+              <div class="container-variables">
+                <div class="variables">
+                  <h2 class="subtitle"><u><b>Variables</b></u></h1>
+                    <label for="fname" class="varname">Amplitude(V):</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="2" max="20" step="1" value="2" class="slider" id="amplitude">
+                    </div>
+                    <label for="fname" class="varname">Frequency(hz):</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="1" max="20" step="1" value="1" class="slider" id="frequency">
+                    </div>
+                    <label for="fname" class="varname">Sampling Frequency(hz):</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="20" max="2000" step="2" value="20" class="slider" id="sampling_frequency">
+                    </div>
+                    <label for="fname" class="varname">Vertical Scale:</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="20" max="200" step="10" value="50" class="slider"
+                        id="vertical_scale_factor">
+                    </div>
+                    <label for="fname" class="varname">Horizontal Scale:</label><br>
+                    <div class="slidecontainer">
+                      <input type="range" min="2" max="200" step="10" value="50" class="slider"
+                        id="horizontal_scale_factor">
+                    </div>
+                </div>
+              </div>
+              <div class="container-result">
+                <h2 class="subtitle"><u><b>Result</b></u></h3>
+                  <h5 class="subtitle"><b>Wave Amplitude(V): </b><span id="Am"></span></h5>
+                  <h5 class="subtitle">Wave Frequency(hz): <span id="Fm"></span></h5>
+                  <h5 class="subtitle">Sampling Frequency(hz): <span id="Fs"></span> </h5>
+                  <h5 class="subtitle">Delta: <span id="Delta"></span> </h5>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="deModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">DM Graph - modulated Graph</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="container">
+            <div class="container-canvas">
+              <canvas id="canvas2"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/graph.js"></script>
+  <script type="module" src="js/dmGraph.js"></script>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
