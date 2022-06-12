@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.container {
+    margin: 0;
+    padding: 0;
+    display: block;
+    width:100%;
+}
+
+.container-canvas {
+    margin: 0;
+    padding-top: 0;
+    border: none;
+    width: 100%;
+    height: max-content;
+}
+
+.container-variables {
+    border-left: 2px solid black;
+    width: 80%;
+    line-height: 0.7;
+    padding-top:1.5rem;
+    padding-left: 4.5rem;
+}
+
+.container-variables-wo-border {
+    line-height: 0.7;
+    margin: 1rem 1rem;
+}
+
+.container-result {
+    border-left: 2px solid black;
+    width: max-content;
+    max-width: 100%;
+    padding:1.5rem 2rem;
+    padding-right:1rem;
+}
+
+#container-checkbox{
+    width: max-content;
+    max-width: 100%;
+    padding:1.5rem 3rem;
+    padding-right:1rem;
+}
+
+.modal-body {
+    padding: 0.5rem !important;
+}
+
+#container-split{
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    height: 30% !important;
+}
+
+#canvas {
+    border-bottom: 2px solid black;
+    margin: 0px auto;
+    padding: 0;
+    display: block;
+}
+
+.subtitle{
+    font-family: 'Urbanist', sans-serif;   
+}
+
+.varname{
+    font-weight: 500;
+}

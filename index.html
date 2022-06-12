@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/main.css">
+  <title>Delta Modulation</title>
+
+  <!-- p5 stuff -->
+  <script src="js/p5.js"></script>
+  <script src="js/html2canvas.js"></script>
+
+  <!-- Simulator stuff -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/graph.css">
+  <link rel="stylesheet" href="./css/scrollbars.css">
+  <link rel="stylesheet" href="./css/checkmark.css">
+  <link rel="stylesheet" href="./css/customslider.css">
+</head>
+
+<body>
+  <script>
+    function updateSineAmp(value) {
+      document.getElementById("swAmp").innerHTML = value * 2;
+    }
+    function updateSineFreq(value) {
+      document.getElementById("swFreq").innerHTML = value;
+    }
+    function updateSampFreq(value) {
+      document.getElementById("saFreq").innerHTML = value;
+    }
+    function updateBitLength(value) {
+      document.getElementById("bitlength").innerHTML = value;
+    }
+
+    function vsync(id) {
+      var val = document.getElementById(id).value;
+      document.getElementById("reconwave_vertical_scale_factor").value = Number(val);
+      document.getElementById("quantizedwave_vertical_scale_factor").value = Number(val);
+      document.getElementById("decoderwave_vertical_scale_factor").value = Number(val);
+      document.getElementById("sampledwave_vertical_scale_factor").value = Number(val);
+    }
+
+    function hsync(id) {
+      var val = document.getElementById(id).value;
+      document.getElementById("reconwave_horizontal_scale_factor").value = Number(val);
+      document.getElementById("quantizedwave_horizontal_scale_factor").value = Number(val);
+      document.getElementById("decoderwave_horizontal_scale_factor").value = Number(val);
+      document.getElementById("sampledwave_horizontal_scale_factor").value = Number(val);
+    }
+    function getScreen() {
+      var caption = $('#caption-input').val();
+      $("#caption-text").html(caption);
+      $("#panel").hide();
+
+      html2canvas(document.getElementById('encodedWaveGraph')).then(function (canvas) {
+        $("#blank").attr('href', canvas.toDataURL("image/png"));
+        $("#blank").attr('download', caption + '.png');
+        $("#blank")[0].click();
+      });
+
+    }
+
+    function getScreen2() {
+      var caption = $('#caption-input').val();
+      $("#caption-text").html(caption);
+      $("#panel").hide();
+
+      html2canvas(document.getElementById('evalWaveGraph')).then(function (canvas) {
+        $("#blank").attr('href', canvas.toDataURL("image/png"));
+        $("#blank").attr('download', caption + '.png');
+        $("#blank")[0].click();
+      });
+
+    }
+
+    function getScreen3() {
+      var caption = $('#caption-input').val();
+      $("#caption-text").html(caption);
+      $("#panel").hide();
+
+      html2canvas(document.getElementById('decoderWaveGraph')).then(function (canvas) {
+        $("#blank").attr('href', canvas.toDataURL("image/png"));
+        $("#blank").attr('download', caption + '.png');
+        $("#blank")[0].click();
+      });
+
+    }
+  </script>
+  <h1 class="title main-title">Delta Modulation</h1>
+
+  <button onClick="window.location.reload();" id="resetbtn">Reset</button>
+
+  <button id="button2" style="display:none;" type="button" class="btn btn-primary" data-toggle="modal"
+    data-target="#deModal">
+    See Modulated Output
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="evalWaveGraph" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delta Modulation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="dmWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="5" max="200" step="5" value="50" class="slider"
+                  id="eval_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="10" max="200" step="10" value="10" class="slider"
+                  id="eval_horizontal_scale_factor">
+              </div>
+            </div>
+            <div style="display: block">
+              <div class="container-result">
+                <h3 class="subtitle"><u><b>Result</b></u></h3>
+                <h5 class="subtitle"><b>Wave Amplitude(V): </b><span id="Am"></span></h5>
+                <h5 class="subtitle"><b>Wave Frequency(hz):</b> <span id="Fm"></span></h5>
+                <h5 class="subtitle"><b>Delta:</b> <span id="Delta"></span> </h5>
+              </div>
+            </div>
+            <br><br>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="getScreen2()" class="btn btn-secondary" id="gd">Download Graph</button>
+            <a href="" id="blank"></a>
+            <div class="caption" id="caption">
+              <span id="caption-text" class="border" style="text-align: center;"></span>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <button id="quizbtn" type="button" style="display:none">
+    Show Quiz
+  </button>
+
+  <div class="modal fade" id="quizModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Quiz</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <br />
+          <div id="quizBody" style="padding: 10px">
+            <div>
+              <!-- <h5><b>1) This is question one.</b></h5>
+              <input type="radio" style="margin-left: 25px">This is option one.</input><br />
+              <input type="radio" style="margin-left: 25px"><span>This is option two.</span></input><br />
+              <p id="1ans" style="display: none;">This is the correct ans</p> -->
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button id='submitbtn' type="button" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sourceWaveGraph" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Sine Wave Generator</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="sourceWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Amplitude(V):&nbsp;
+                <span><span id="swAmp">2</span>V</span>
+              </label><br>
+              <div class="slidecontainer">
+                <input type="range" min="1" max="10" step="1" value="1" class="slider"
+                  oninput="updateSineAmp(this.value)" id="swamplitude">
+              </div>
+              <label for="fname" class="varname">Frequency(hz):&nbsp;
+                <span><span id="swFreq">1</span>Hz</span>
+              </label><br>
+              <div class="slidecontainer">
+                <input type="range" min="1" max="20" step="1" value="1" class="slider"
+                  oninput="updateSineFreq(this.value)" id="swfrequency">
+              </div>
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="5" max="200" step="5" value="50" class="slider"
+                  id="sourcewave_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="10" max="200" step="10" value="10" class="slider"
+                  id="sourcewave_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sampledWaveGraph" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Sampled Wave</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="sampledWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Sampling Frequency(hz):&nbsp;
+                <span id="saFreq">20</span>
+              </label><br>
+              <div class="slidecontainer">
+                <input type="range" min="20" max="200" step="1" value="20" class="slider"
+                  oninput="updateSampFreq(this.value)" id="safrequency">
+              </div>
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="vsync(this.id)" type="range" min="5" max="200" step="5" value="50" class="slider"
+                  id="sampledwave_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="hsync(this.id)" type="range" min="10" max="200" step="10" value="40" class="slider"
+                  id="sampledwave_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="decoderWaveGraph" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Decoded Wave</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="decoderWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="vsync(this.id)" type="range" min="5" max="200" step="5" value="50" class="slider"
+                  id="decoderwave_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="hsync(this.id)" type="range" min="10" max="200" step="10" value="40" class="slider"
+                  id="decoderwave_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button onclick="getScreen3()" class="btn btn-secondary" id="gd">Download Graph</button>
+          <a href="" id="blank"></a>
+          <div class="caption" id="caption">
+            <span id="caption-text" class="border" style="text-align: center;"></span>
+          </div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="quantizerOutput" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Quantizer</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="quantizerWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <p><strong>Number of Quantization levels : </strong><span id="binListSize"></span></p>
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="vsync(this.id)" type="range" min="5" max="200" step="5" value="50" class="slider"
+                  id="quantizedwave_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="hsync(this.id)" type="range" min="10" max="200" step="10" value="40" class="slider"
+                  id="quantizedwave_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="encodedWaveGraph" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Encoded Wave</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="encodedWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Vertical-Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="10" max="100" step="10" value="10" class="slider"
+                  id="encodedwave_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="5" max="200" step="5" value="40" class="slider"
+                  id="encodedwave_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button onclick="getScreen()" class="btn btn-secondary">Download Graph</button>
+          <a href="" id="blank"></a>
+          <div class="caption" id="caption">
+            <span id="caption-text" class="border" style="text-align: center;"></span>
+          </div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="reconWaveGraph" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Reconstructed Wave</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="reconWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="vsync(this.id)" type="range" min="5" max="200" step="5" value="50" class="slider"
+                  id="reconwave_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input onchange="hsync(this.id)" type="range" min="10" max="200" step="10" value="40" class="slider"
+                  id="reconwave_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="lpfWaveGraph" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Low Pass Filter</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="display: block">
+          <div class="" id="canvas-container" style="padding-bottom: 2vh;">
+            <canvas id="lpfWaveCanvas"></canvas>
+          </div>
+          <div class="container-variables-wo-border">
+            <div class="variables">
+              <label for="fname" class="varname">Vertical Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="5" max="200" step="5" value="50" class="slider" id="lpf_vertical_scale_factor">
+              </div>
+              <label for="fname" class="varname">Horizontal Scale:</label><br>
+              <div class="slidecontainer">
+                <input type="range" min="10" max="200" step="10" value="10" class="slider"
+                  id="lpf_horizontal_scale_factor">
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+  <!-- <script type="module" src="js/graph.js"></script> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
